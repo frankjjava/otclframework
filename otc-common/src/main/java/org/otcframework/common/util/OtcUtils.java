@@ -332,6 +332,10 @@ public class OtcUtils {
 
 	public static void creteDirectory(String path) {
 		File file = new File(path);
+		creteDirectory(file);
+	}
+
+	public static void creteDirectory(File file) {
 		if (!file.exists()) {
 			file.mkdirs();
 		}

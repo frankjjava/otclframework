@@ -50,12 +50,6 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 	/** The Constant otcCompilerImpl. */
 	private static final SourceCodeCompiler SOURCE_CODE_COMPILER = new SourceCodeCompilerImpl();
 
-	/** The Constant srcDir. */
-	private static final String SOURCE_CODE_LOCATION = OtcConfig.getSourceCodeDirectoryPath();
-
-	/** The Constant otcTargetDir. */
-	private static final String OTC_TARGET_LOCATION = OtcConfig.getTargetDirectoryPath();
-
 	/** The Constant depFileFilter. */
 	private static final FileFilter TMD_FILE_FILTER = CommonUtils.createFilenameFilter(OtcConstants.OTC_TMD_EXTN);
 
@@ -100,8 +94,12 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 	public void compileSourceCode() {
 		LOGGER.info("Compiling source-code files. Please wait.......");
 		long startTime = System.nanoTime();
-		File binDir = new File(OTC_TMD_LOCATION);
-		File[] files = binDir.listFiles(TMD_FILE_FILTER);
+		if (OtcConfig.isDefaultLocations() && OtcConfig.getCleanupBeforeCompile()) {
+			OtcUtils.deleteFileOrFolder(OTC_TARGET_LOCATION);
+		}
+		OtcUtils.creteDirectory(OTC_TARGET_LOCATION);
+		File tmdDir = new File(OTC_TMD_LOCATION);
+		File[] files = tmdDir.listFiles(TMD_FILE_FILTER);
 		if (files == null) {
 			LOGGER.info("No Token-Metadata file(s) found in '{}' for registration", OTC_TMD_LOCATION);
 			return;
@@ -187,6 +185,9 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 		File fileClzPathRoot = new File(OTC_TARGET_LOCATION);
+		if (OtcConfig.isDefaultLocations()) {
+			OtcUtils.creteDirectory(fileClzPathRoot);
+		}
 		try {
 			fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(fileClzPathRoot));
 			File fileSrcPathRoot = new File(SOURCE_CODE_LOCATION);

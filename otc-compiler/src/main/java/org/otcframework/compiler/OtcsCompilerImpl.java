@@ -83,6 +83,12 @@ public final class OtcsCompilerImpl extends AbstractCompiler implements OtcsComp
 		if (!unitTestDirectory.exists()) {
 			throw new OtcCompilerException("", String.format("Missing '%s' folder.", UNIT_TEST_LOCATION));
 		}
+		if (OtcConfig.isDefaultLocations() && OtcConfig.getCleanupBeforeCompile()) {
+			OtcUtils.deleteFileOrFolder(SOURCE_CODE_LOCATION);
+			OtcUtils.deleteFileOrFolder(OTC_TMD_LOCATION);
+		}
+		OtcUtils.creteDirectory(SOURCE_CODE_LOCATION);
+		OtcUtils.creteDirectory(OTC_TMD_LOCATION);
 		List<CompilationReport> compilationReports = compileAll(unitTestDirectory, null);
 		if (compilationReports == null) {
 			LOGGER.info("No OTCS files to compile in '{}'", UNIT_TEST_LOCATION);

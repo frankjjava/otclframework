@@ -123,8 +123,6 @@ public enum OtcConfig {
 		} else {
 			tmdDirectory = otcHome + OTC_TMD_FOLDER;
 		}
-		OtcUtils.deleteFileOrFolder(tmdDirectory);
-		OtcUtils.creteDirectory(tmdDirectory);
 
 		try {
 			URL url = new File(targetDirectory).toURI().toURL();
@@ -146,8 +144,6 @@ public enum OtcConfig {
 		} else {
 			path = otcHome + defaultPath;
 		}
-		OtcUtils.deleteFileOrFolder(path);
-		OtcUtils.creteDirectory(path);
 		return path;
 	}
 

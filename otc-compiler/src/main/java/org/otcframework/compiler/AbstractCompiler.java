@@ -12,6 +12,10 @@ import java.io.IOException;
 abstract class AbstractCompiler {
 
     protected static final String OTC_TMD_LOCATION = OtcConfig.getOtcTmdDirectoryPath();
+    /** The Constant srcDir. */
+    protected static final String SOURCE_CODE_LOCATION = OtcConfig.getSourceCodeDirectoryPath();
+    /** The Constant otcTargetDir. */
+    protected static final String OTC_TARGET_LOCATION = OtcConfig.getTargetDirectoryPath();
 
     protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -21,7 +25,6 @@ abstract class AbstractCompiler {
      * @param registryDto the registry dto
      */
     protected void createRegistrationFile(RegistryDto registryDto) {
-        OtcUtils.creteDirectory(OTC_TMD_LOCATION);
         try (FileOutputStream fos = new FileOutputStream(registryDto.registryFileName)) {
             String str = OBJECT_MAPPER.writeValueAsString(registryDto);
             fos.write(str.getBytes());

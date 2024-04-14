@@ -292,17 +292,6 @@ public class OtcCommand {
 	 */
 	private void appendBeginClass(TargetOtcCommandContext targetOCC, SourceOtcCommandContext sourceOCC,
 			Class<?> targetClz, Class<?> sourceClz, boolean addLogger, boolean isModule) {
-		String fileName = targetOCC.factoryClassDto.fullyQualifiedClassName.replace(".", File.separator);
-		try {
-			OtcUtils.deleteFileOrFolder(TARGET_LOCATION + fileName + OtcConstants.CLASS_EXTN);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
-		}
-		try {
-			OtcUtils.deleteFileOrFolder(SOURCE_CODE_FOLDER + fileName + OtcConstants.SOURCE_CODE_EXTN);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
-		}
 		targetOCC.factoryClassDto.codeBuilder = new StringBuilder();
 		targetOCC.factoryClassDto.clearImports();
 		targetOCC.factoryClassDto.addImport(Map.class.getName());
