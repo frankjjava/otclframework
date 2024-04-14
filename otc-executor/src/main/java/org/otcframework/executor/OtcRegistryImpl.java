@@ -63,7 +63,7 @@ public enum OtcRegistryImpl implements OtcRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OtcRegistryImpl.class);
 
 	/** The map packaged otc dtos. */
-	private Map<String, RegistryDto> mapPackagedOtcDtos = new HashMap<>();
+	private static final Map<String, RegistryDto> mapPackagedOtcDtos = new HashMap<>();
 
 	/** The Constant depFileFilter. */
 	private static final FileFilter depFileFilter = CommonUtils.createFilenameFilter(OtcConstants.OTC_TMD_EXTN);
@@ -90,10 +90,10 @@ public enum OtcRegistryImpl implements OtcRegistry {
 		if (OtcConfig.isDefaultLocations()) {
 			directory = new File(OtcConfig.getOtcTmdDirectoryPath());
 		} else {
-			URL tmdUrl = this.getClass().getClassLoader().getResource(OtcConfig.OTC_TMD_FOLDER);
+			URL tmdUrl = this.getClass().getClassLoader().getResource("./" + OtcConfig.OTC_TMD_FOLDER);
 			try {
 				directory = new File(tmdUrl.toURI());
-			} catch (URISyntaxException e) {
+			} catch (URISyntaxException | NullPointerException e) {
 				throw new RegistryException("", "Unable to load '.tmd' files...", e);
 			}
 		}
