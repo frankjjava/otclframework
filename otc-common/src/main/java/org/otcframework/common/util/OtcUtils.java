@@ -276,8 +276,8 @@ public class OtcUtils {
 			} else {
 				try {
 					if (file.getName().endsWith(".jar")) {
-						URL url = file.toURI().toURL();
-						url = new URL("jar:file:" + file.getAbsolutePath() + "!/");
+//						URL url = file.toURI().toURL();
+						URL url = new URL("jar:file:" + file.getAbsolutePath() + "!/");
 						urls.add(url);
 					}
 				} catch (MalformedURLException e) {
