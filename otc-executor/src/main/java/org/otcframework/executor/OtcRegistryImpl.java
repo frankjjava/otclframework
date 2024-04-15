@@ -254,7 +254,7 @@ public enum OtcRegistryImpl implements OtcRegistry {
 		RegistryDto registryDto = mapPackagedOtcDtos.get(registryId);
 		if (registryDto == null) {
 			throw new RegistryException("",
-					"OTC registry with ID '" + registryId + "' not found or not compiled and registered!");
+					"OTC registry ID '" + registryId + "' not compiled and registered!");
 		}
 		return registryDto;
 	}

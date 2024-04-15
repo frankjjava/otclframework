@@ -55,10 +55,10 @@ public enum OtcConfig {
 
 	private static final String OTC_UNITTEST_FOLDER = "otc-unittest" + File.separator;
 	private static final String OTC_LIB_FOLDER = "lib" + File.separator;
-	public static final String OTC_SRC_FOLDER = "src" + File.separator;
+	private static final String OTC_SRC_FOLDER = "src" + File.separator;
+	private static final String OTC_TARGET_FOLDER = "target" + File.separator;
+	private static final String OTC_CONFIG_FILE = "otc.yaml";
 	public static final String OTC_TMD_FOLDER = "tmd" + File.separator;
-	public static final String OTC_TARGET_FOLDER = "target" + File.separator;
-	public static final String OTC_CONFIG_FILE = File.separator + "otc.yaml";
 	private static boolean isDefaultLocations = true;
 	private static String otcHome;
 
@@ -87,20 +87,17 @@ public enum OtcConfig {
 			targetDirectory = YAML_CONFIG.compiler.paths.targetDirectory;
 			boolean isSourceCodeDirectoryDefined = !CommonUtils.isTrimmedAndEmpty(sourceCodeDirectory);
 			boolean isTmdDirectoryDefined = !CommonUtils.isTrimmedAndEmpty(tmdDirectory);
-			boolean isTargetDirectoryDefined = !CommonUtils.isTrimmedAndEmpty(targetDirectory);
-			if (!(isSourceCodeDirectoryDefined == isTmdDirectoryDefined &&
-					isSourceCodeDirectoryDefined == isTargetDirectoryDefined)) {
-				throw new OtcConfigException("", String.format("Either ALL or NONE of this set of 3 properties " +
-								"('compiler.locations.sourceCodeDirectory:', 'compiler.locations.tmdDirectory:', " +
-								"'compiler.locations.targetDirectory:') should be defined in the '%s%s' file.", otcConfigLocation,
-						OTC_CONFIG_FILE));
+			if (isSourceCodeDirectoryDefined != isTmdDirectoryDefined) {
+				throw new OtcConfigException("", String.format("Either BOTH or NONE of this set of 2 properties " +
+								"('compiler.paths.sourceCodeDirectory:', 'compiler.paths.tmdDirectory:) should be" +
+								" defined in the '%s%s' file.", otcConfigLocation, OTC_CONFIG_FILE));
 			}
 			if (isSourceCodeDirectoryDefined) {
 				isDefaultLocations = false;
 			}
-			if (getCleanupBeforeCompile()) {
+			if (getCleanupBeforeCompile() && isDefaultLocations) {
 				LOGGER.warn("You have set 'compiler.cleanupBeforeCompile' property to true. " +
-						"Updated source-code if any will be lost during clean-up.");
+						"Updated source-code if any in ${OTC_HOME} '{}' will be lost during clean-up.", otcHome);
 			}
 		}
 		sourceCodeDirectory = initFolder(sourceCodeDirectory, OTC_SRC_FOLDER);
@@ -271,9 +268,9 @@ public enum OtcConfig {
 		}
 	}
 
-	private static YamlConfig loadOtcConfig(String otcHome) {
+	private static YamlConfig loadOtcConfig(String otcConfigLocation) {
 		try {
-			return YamlSerializationHelper.deserialize(otcHome + OTC_CONFIG_FILE, YamlConfig.class);
+			return YamlSerializationHelper.deserialize(otcConfigLocation + OTC_CONFIG_FILE, YamlConfig.class);
 		} catch (Exception ex) {
 			throw new OtcConfigException(ex);
 		}
@@ -296,11 +293,12 @@ public enum OtcConfig {
 		return otcHome;
 	}
 
-	private static String getOtcConfigLocation() {
+	public static String getOtcConfigLocation() {
 		try {
 			// -- this below line is to only check if file exists. If file is not present an exception is thrown.
-			OtcConfig.class.getClassLoader().getResource("." + OTC_CONFIG_FILE);
-			return Paths.get(OtcConfig.class.getClassLoader().getResource(".").toURI()).toString();
+			OtcConfig.class.getClassLoader().getResource("." + File.separator + OTC_CONFIG_FILE);
+
+			return Paths.get(OtcConfig.class.getClassLoader().getResource(".").toURI()).toString() + File.separator;
 		} catch (URISyntaxException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
