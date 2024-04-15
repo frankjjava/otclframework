@@ -45,6 +45,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -86,17 +87,18 @@ public enum OtcRegistryImpl implements OtcRegistry {
 	 */
 	@Override
 	public void register() {
-		File directory;
-		if (OtcConfig.isDefaultLocations()) {
-			directory = new File(OtcConfig.getOtcTmdDirectoryPath());
-		} else {
-			URL tmdUrl = this.getClass().getClassLoader().getResource("./" + OtcConfig.OTC_TMD_FOLDER);
-			try {
-				directory = new File(tmdUrl.toURI());
-			} catch (URISyntaxException | NullPointerException e) {
-				throw new RegistryException("", "Unable to load '.tmd' files...", e);
-			}
-		}
+		File directory = new File(OtcConfig.getOtcTmdDirectoryPath());
+//		if (OtcConfig.isDefaultLocations()) {
+//			directory = new File(OtcConfig.getOtcTmdDirectoryPath());
+//		} else {
+//			URL tmdUrl = this.getClass().getClassLoader().getResource("." + File.separator
+//					+ OtcConfig.OTC_TMD_FOLDER);
+//			try {
+//				directory = new File(tmdUrl.toURI());
+//			} catch (URISyntaxException | NullPointerException e) {
+//				throw new RegistryException("", "Unable to load '.tmd' files...", e);
+//			}
+//		}
 		File[] files = directory.listFiles(depFileFilter);
 		if (files == null) {
 			return;
@@ -110,7 +112,7 @@ public enum OtcRegistryImpl implements OtcRegistry {
 			}
 			try (FileInputStream fis = new FileInputStream(file)) {
 				byte[] contents = new byte[fis.available()];
-				fis.read(contents);
+				int bytesRead = fis.read(contents);
 				RegistryDto registryDto = objectMapper.readValue(contents, RegistryDto.class);
 				if (registryDto.hasError) {
 					LOGGER.error(
@@ -208,9 +210,9 @@ public enum OtcRegistryImpl implements OtcRegistry {
 		}
 		CodeExecutor codeExecutor;
 		try {
-			codeExecutor = (CodeExecutor) mainClz.newInstance();
+			codeExecutor = (CodeExecutor) mainClz.getDeclaredConstructor().newInstance();
 			registryDto.codeExecutor = codeExecutor;
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 			throw new OtcException("", e);
 		}
 		mapPackagedOtcDtos.put(registryDto.registryId, registryDto);
@@ -254,7 +256,7 @@ public enum OtcRegistryImpl implements OtcRegistry {
 		RegistryDto registryDto = mapPackagedOtcDtos.get(registryId);
 		if (registryDto == null) {
 			throw new RegistryException("",
-					"OTC-Registry ID '" + registryId + "' not compiled and registered!");
+					"OTCS file '" + registryId + ".otcs' not compiled and registered!");
 		}
 		return registryDto;
 	}

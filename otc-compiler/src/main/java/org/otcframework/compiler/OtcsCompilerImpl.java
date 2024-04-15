@@ -232,7 +232,7 @@ public final class OtcsCompilerImpl extends AbstractCompiler implements OtcsComp
 			otcDto = OtcLexicalizer.lexicalize(file, otcNamespace);
 			if (otcDto.scriptDtos == null || otcDto.scriptDtos.isEmpty()) {
 				throw new CodeGeneratorException("",
-						"No OTC commmands to execute! " + "OTC-Scripts are missing or none are enabled.");
+						"No OTC commmands to execute! OTC-Scripts are missing or none are enabled.");
 			}
 			ClassDto mainClassDto = new ClassDto();
 			otcDto.mainClassDto = mainClassDto;

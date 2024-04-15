@@ -132,7 +132,7 @@ public class OtcUtils {
 			registryId = sourceClz + "_" + targetClz;
 		}
 		if (!CommonUtils.isTrimmedAndEmpty(otcNamespace)) {
-			registryId = otcNamespace + "." + registryId;
+			registryId = otcNamespace + "->" + registryId;
 		}
 		return registryId;
 	}
