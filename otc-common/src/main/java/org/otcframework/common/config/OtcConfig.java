@@ -30,8 +30,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -42,7 +44,9 @@ import java.util.Set;
  */
 public enum OtcConfig {
 
-	/** The instance. */
+	/**
+	 * The instance.
+	 */
 	INSTANCE;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OtcConfig.class);
@@ -54,7 +58,7 @@ public enum OtcConfig {
 	public static final String OTC_SRC_FOLDER = "src" + File.separator;
 	public static final String OTC_TMD_FOLDER = "tmd" + File.separator;
 	public static final String OTC_TARGET_FOLDER = "target" + File.separator;
-	public static final String OTC_CONFIG_FILE = "config" + File.separator + "otc.yaml";
+	public static final String OTC_CONFIG_FILE = File.separator + "otc.yaml";
 	private static boolean isDefaultLocations = true;
 	private static String otcHome;
 
@@ -72,24 +76,10 @@ public enum OtcConfig {
 	}
 
 	static {
-		Map<String, String> sysEnv = System.getenv();
-		if (!sysEnv.containsKey(OTC_HOME_ENV_VAR)) {
-			throw new OtcConfigException("",
-					"Oops... Cannot proceed - '" + OTC_HOME_ENV_VAR + "' not set! Please set '" +
-							OTC_HOME_ENV_VAR + "' environment variable.");
-		}
-		otcHome = sysEnv.get(OTC_HOME_ENV_VAR);
-		if (CommonUtils.isTrimmedAndEmpty(otcHome)) {
-			throw new OtcException("", "Oops... Environment variable '" + OTC_HOME_ENV_VAR + "' not set! ");
-		}
-		if (!otcHome.endsWith(File.separator)) {
-			otcHome += File.separator;
-		}
-		try {
-			YAML_CONFIG = YamlSerializationHelper.deserialize(otcHome + OTC_CONFIG_FILE, YamlConfig.class);
-		} catch (Exception ex) {
-			throw new OtcConfigException(ex);
-		}
+		otcHome = getOtcHome();
+		String otcConfigLocation = getOtcConfigLocation();
+		YAML_CONFIG = loadOtcConfig(otcConfigLocation);
+
 		// -- load sourceCodeLocation and tmdLocation properties
 		if (Objects.nonNull(YAML_CONFIG.compiler) && Objects.nonNull(YAML_CONFIG.compiler.paths)) {
 			sourceCodeDirectory = YAML_CONFIG.compiler.paths.sourceCodeDirectory;
@@ -101,8 +91,8 @@ public enum OtcConfig {
 			if (!(isSourceCodeDirectoryDefined == isTmdDirectoryDefined &&
 					isSourceCodeDirectoryDefined == isTargetDirectoryDefined)) {
 				throw new OtcConfigException("", String.format("Either ALL or NONE of this set of 3 properties " +
-						"('compiler.locations.sourceCodeDirectory:', 'compiler.locations.tmdDirectory:', " +
-						"'compiler.locations.targetDirectory:') should be defined in the '%s%s' file.", otcHome,
+								"('compiler.locations.sourceCodeDirectory:', 'compiler.locations.tmdDirectory:', " +
+								"'compiler.locations.targetDirectory:') should be defined in the '%s%s' file.", otcConfigLocation,
 						OTC_CONFIG_FILE));
 			}
 			if (isSourceCodeDirectoryDefined) {
@@ -121,12 +111,12 @@ public enum OtcConfig {
 			}
 			tmdDirectory += OTC_TMD_FOLDER;
 		} else {
-			tmdDirectory = otcHome + OTC_TMD_FOLDER;
+			tmdDirectory = otcConfigLocation + OTC_TMD_FOLDER;
 		}
 
 		try {
 			URL url = new File(targetDirectory).toURI().toURL();
-			URL[] urls = new URL[] { url };
+			URL[] urls = new URL[]{url};
 			CLZ_LOADER = URLClassLoader.newInstance(urls);
 		} catch (MalformedURLException e) {
 			throw new OtcConfigException(e);
@@ -159,6 +149,7 @@ public enum OtcConfig {
 	public static boolean isDefaultLocations() {
 		return isDefaultLocations;
 	}
+
 	/**
 	 * Gets the otc lib location.
 	 *
@@ -166,7 +157,7 @@ public enum OtcConfig {
 	 */
 	public static String getOtcLibDirectoryPath() {
 		if (Objects.nonNull(YAML_CONFIG.compiler) && Objects.nonNull(YAML_CONFIG.compiler.paths) &&
-			Objects.nonNull(YAML_CONFIG.compiler.paths.libDirectory)) {
+				Objects.nonNull(YAML_CONFIG.compiler.paths.libDirectory)) {
 			return YAML_CONFIG.compiler.paths.libDirectory;
 		}
 		return otcHome + OTC_LIB_FOLDER;
@@ -274,7 +265,7 @@ public enum OtcConfig {
 		public CompilerProps compiler;
 		public Map<String, String> concreteTypes;
 		public Set<String> filterPackages;
-		
+
 		public static final class CompilerProps {
 			public Boolean cleanupBeforeCompile;
 			public Integer cyclicReferenceDepthLimit;
@@ -289,4 +280,39 @@ public enum OtcConfig {
 		}
 	}
 
+	private static YamlConfig loadOtcConfig(String otcHome) {
+		try {
+			return YamlSerializationHelper.deserialize(otcHome + OTC_CONFIG_FILE, YamlConfig.class);
+		} catch (Exception ex) {
+			throw new OtcConfigException(ex);
+		}
+	}
+
+	private static String getOtcHome() {
+		Map<String, String> sysEnv = System.getenv();
+		if (!sysEnv.containsKey(OTC_HOME_ENV_VAR)) {
+			throw new OtcConfigException("",
+					"Oops... Cannot proceed - '" + OTC_HOME_ENV_VAR + "' not set! Please set '" +
+							OTC_HOME_ENV_VAR + "' environment variable.");
+		}
+		String otcHome = sysEnv.get(OTC_HOME_ENV_VAR);
+		if (CommonUtils.isTrimmedAndEmpty(otcHome)) {
+			throw new OtcException("", "Oops... Environment variable '" + OTC_HOME_ENV_VAR + "' not set! ");
+		}
+		if (!otcHome.endsWith(File.separator)) {
+			otcHome += File.separator;
+		}
+		return otcHome;
+	}
+
+	private static String getOtcConfigLocation() {
+		try {
+			// -- this below line is to only check if file exists. If file is not present an exception is thrown.
+			OtcConfig.class.getClassLoader().getResource("." + OTC_CONFIG_FILE);
+			return Paths.get(OtcConfig.class.getClassLoader().getResource(".").toURI()).toString();
+		} catch (URISyntaxException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+		return otcHome;
+	}
 }
