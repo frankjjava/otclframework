@@ -137,15 +137,6 @@ public enum OtcConfig {
 		return path;
 	}
 
-	/**
-	 * Gets the otc home location.
-	 *
-	 * @return the otc home location
-	 */
-	public static String getOtcHomeDirectory() {
-		return otcHome;
-	}
-
 	public static boolean isDefaultLocations() {
 		return isDefaultLocations;
 	}
