@@ -35,6 +35,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.tools.*;
 import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -70,12 +72,7 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 				otcLibClassPath.append(File.pathSeparator + file.getAbsolutePath());
 			}
 		}
-		if (otcLibClassPath == null || otcLibClassPath.length() == 0) {
-			optionList.add(System.getProperty("java.class.path") + File.pathSeparator + OTC_TARGET_LOCATION);
-		} else {
-			optionList.add(System.getProperty("java.class.path") + File.pathSeparator + OTC_TARGET_LOCATION
-					+ otcLibClassPath.toString());
-		}
+		optionList.add(System.getProperty("java.class.path") + File.pathSeparator);
 	}
 
 	/**
@@ -94,10 +91,6 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 	public void compileSourceCode() {
 		LOGGER.info("Compiling source-code files. Please wait.......");
 		long startTime = System.nanoTime();
-		if (OtcConfig.isDefaultLocations() && OtcConfig.getCleanupBeforeCompile()) {
-			OtcUtils.deleteFileOrFolder(OTC_TARGET_LOCATION);
-		}
-		OtcUtils.creteDirectory(OTC_TARGET_LOCATION);
 		File tmdDir = new File(OTC_TMD_LOCATION);
 		File[] files = tmdDir.listFiles(TMD_FILE_FILTER);
 		if (files == null) {
@@ -184,7 +177,12 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 	private void compileSourceCode(List<JavaFileObject> javaFileObjects, RegistryDto registryDto) {
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-		File fileClzPathRoot = new File(OTC_TARGET_LOCATION);
+		File fileClzPathRoot = null;
+		try {
+			fileClzPathRoot = Paths.get(OtcConfig.class.getClassLoader().getResource(".").toURI()).toFile();
+		} catch (URISyntaxException e) {
+			throw new OtcCompilerException(e);
+		}
 		if (OtcConfig.isDefaultLocations()) {
 			OtcUtils.creteDirectory(fileClzPathRoot);
 		}

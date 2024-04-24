@@ -72,10 +72,6 @@ public enum OtcRegistryImpl implements OtcRegistry {
 	/** The Constant objectMapper. */
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-	/** The Constant clzLoader. */
-	private static final URLClassLoader clzLoader = OtcConfig.getTargetClassLoader();
-	private static final String OTC_TARGET_FOLDER = OtcConfig.getTargetDirectoryPath();
-
 	/**
 	 * Instantiates a new otc registry impl.
 	 */
@@ -88,17 +84,6 @@ public enum OtcRegistryImpl implements OtcRegistry {
 	@Override
 	public void register() {
 		File directory = new File(OtcConfig.getOtcTmdDirectoryPath());
-//		if (OtcConfig.isDefaultLocations()) {
-//			directory = new File(OtcConfig.getOtcTmdDirectoryPath());
-//		} else {
-//			URL tmdUrl = this.getClass().getClassLoader().getResource("." + File.separator
-//					+ OtcConfig.OTC_TMD_FOLDER);
-//			try {
-//				directory = new File(tmdUrl.toURI());
-//			} catch (URISyntaxException | NullPointerException e) {
-//				throw new RegistryException("", "Unable to load '.tmd' files...", e);
-//			}
-//		}
 		File[] files = directory.listFiles(depFileFilter);
 		if (files == null) {
 			return;
@@ -200,13 +185,8 @@ public enum OtcRegistryImpl implements OtcRegistry {
 		} catch (OtcUnsupportedJdkException ex) {
 			throw ex;
 		} catch (Exception ex) {
-			try {
-				mainClz = clzLoader.loadClass(mainClass);
-				LOGGER.info("Found entry file {} in {} ", mainClass, OTC_TARGET_FOLDER);
-			} catch (Exception e) {
-				LOGGER.error("Could not load entry file {} ", mainClass);
-				throw new OtcException("", e);
-			}
+			LOGGER.error("Could not load entry file {} ", mainClass);
+			throw new OtcException("", ex);
 		}
 		CodeExecutor codeExecutor;
 		try {

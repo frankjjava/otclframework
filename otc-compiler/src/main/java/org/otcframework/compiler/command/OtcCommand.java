@@ -54,9 +54,6 @@ public class OtcCommand {
 	/** The Constant CODE_TO_IMPORT. */
 	public static final String CODE_TO_IMPORT = "CODE_TO_IMPORT";
 
-	/** The Constant otcBinDir. */
-	private static final String TARGET_LOCATION = OtcConfig.getTargetDirectoryPath();
-
 	/** The Constant sourceFileLocation. */
 	private static final String SOURCE_CODE_FOLDER = OtcConfig.getSourceCodeDirectoryPath();
 

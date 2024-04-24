@@ -29,10 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -56,17 +53,15 @@ public enum OtcConfig {
 	private static final String OTC_UNITTEST_FOLDER = "otc-unittest" + File.separator;
 	private static final String OTC_LIB_FOLDER = "lib" + File.separator;
 	private static final String OTC_SRC_FOLDER = "src" + File.separator;
-	private static final String OTC_TARGET_FOLDER = "target" + File.separator;
 	private static final String OTC_CONFIG_FILE = "otc.yaml";
 	public static final String OTC_TMD_FOLDER = "tmd" + File.separator;
+	public static final String OTC_RESULTS_EXPECTED_FOLDER = "results_expected" + File.separator;
 	private static boolean isDefaultLocations = true;
-	private static String otcHome;
+	private static final String otcHome;
 
 	private static final YamlConfig YAML_CONFIG;
-	private static final URLClassLoader CLZ_LOADER;
 	private static String sourceCodeDirectory;
 	private static String tmdDirectory;
-	private static String targetDirectory;
 	private static final Integer DEFAULT_CYCLIC_REFERENCE_DEPTH = 2;
 
 	/**
@@ -84,7 +79,6 @@ public enum OtcConfig {
 		if (Objects.nonNull(YAML_CONFIG.compiler) && Objects.nonNull(YAML_CONFIG.compiler.paths)) {
 			sourceCodeDirectory = YAML_CONFIG.compiler.paths.sourceCodeDirectory;
 			tmdDirectory = YAML_CONFIG.compiler.paths.tmdDirectory;
-			targetDirectory = YAML_CONFIG.compiler.paths.targetDirectory;
 			boolean isSourceCodeDirectoryDefined = !CommonUtils.isTrimmedAndEmpty(sourceCodeDirectory);
 			boolean isTmdDirectoryDefined = !CommonUtils.isTrimmedAndEmpty(tmdDirectory);
 			if (isSourceCodeDirectoryDefined != isTmdDirectoryDefined) {
@@ -101,7 +95,6 @@ public enum OtcConfig {
 			}
 		}
 		sourceCodeDirectory = initFolder(sourceCodeDirectory, OTC_SRC_FOLDER);
-		targetDirectory = initFolder(targetDirectory, OTC_TARGET_FOLDER);
 		if (!CommonUtils.isTrimmedAndEmpty(tmdDirectory)) {
 			if (!tmdDirectory.endsWith(File.separator)) {
 				tmdDirectory += File.separator;
@@ -109,14 +102,6 @@ public enum OtcConfig {
 			tmdDirectory += OTC_TMD_FOLDER;
 		} else {
 			tmdDirectory = otcConfigLocation + OTC_TMD_FOLDER;
-		}
-
-		try {
-			URL url = new File(targetDirectory).toURI().toURL();
-			URL[] urls = new URL[]{url};
-			CLZ_LOADER = URLClassLoader.newInstance(urls);
-		} catch (MalformedURLException e) {
-			throw new OtcConfigException(e);
 		}
 		Set<String> filteredPackages = YAML_CONFIG.filterPackages;
 		PackagesFilterUtil.setFilteredPackages(filteredPackages);
@@ -200,35 +185,14 @@ public enum OtcConfig {
 	}
 
 	/**
-	 * Gets the compiled code location.
-	 *
-	 * @return the compiled code location
-	 */
-	public static String getTargetDirectoryPath() {
-		if (!CommonUtils.isTrimmedAndEmpty(targetDirectory)) {
-			return targetDirectory;
-		}
-		return otcHome + OTC_TARGET_FOLDER;
-	}
-
-	/**
 	 * Gets the test case expected result location.
 	 *
 	 * @return the test case expected result location
 	 */
 	public static String getTestCaseExpectedResultDirectoryPath() {
-		String expectedLocation = otcHome + File.separator + "result_expected" + File.separator;
+		String expectedLocation = otcHome + File.separator + OTC_RESULTS_EXPECTED_FOLDER;
 		OtcUtils.creteDirectory(expectedLocation);
 		return expectedLocation;
-	}
-
-	/**
-	 * Gets the target class loader.
-	 *
-	 * @return the target class loader
-	 */
-	public static URLClassLoader getTargetClassLoader() {
-		return CLZ_LOADER;
 	}
 
 	/**
@@ -263,7 +227,6 @@ public enum OtcConfig {
 				public String libDirectory;
 				public String sourceCodeDirectory;
 				public String tmdDirectory;
-				public String targetDirectory;
 			}
 		}
 	}
@@ -298,7 +261,7 @@ public enum OtcConfig {
 			// -- this below line is to only check if file exists. If file is not present an exception is thrown.
 			OtcConfig.class.getClassLoader().getResource("." + File.separator + OTC_CONFIG_FILE);
 
-			return Paths.get(OtcConfig.class.getClassLoader().getResource(".").toURI()).toString() + File.separator;
+			return Paths.get(OtcConfig.class.getClassLoader().getResource(".").toURI()) + File.separator;
 		} catch (URISyntaxException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
