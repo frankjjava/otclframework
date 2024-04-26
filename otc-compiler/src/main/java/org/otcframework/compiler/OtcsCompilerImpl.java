@@ -227,7 +227,7 @@ public final class OtcsCompilerImpl extends AbstractCompiler implements OtcsComp
 				.addOtcNamespace(otcNamespace).addOtcFileName(otcFileName);
 		String message = null;
 		try {
-			LOGGER.info("Compiling OTCS file : {}->{}", otcNamespace, otcFileName);
+			LOGGER.info("Compiling OTC Script file : {}->{}", otcNamespace, otcFileName);
 			long startTime = System.nanoTime();
 			otcDto = OtcLexicalizer.lexicalize(file, otcNamespace);
 			if (otcDto.scriptDtos == null || otcDto.scriptDtos.isEmpty()) {

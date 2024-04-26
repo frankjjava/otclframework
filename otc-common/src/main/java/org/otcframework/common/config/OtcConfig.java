@@ -29,7 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -53,6 +55,7 @@ public enum OtcConfig {
 	private static final String OTC_UNITTEST_FOLDER = "otc-unittest" + File.separator;
 	private static final String OTC_LIB_FOLDER = "lib" + File.separator;
 	private static final String OTC_SRC_FOLDER = "src" + File.separator;
+	private static final String OTC_CONFIG_FOLDER = "config" + File.separator;
 	private static final String OTC_CONFIG_FILE = "otc.yaml";
 	public static final String OTC_TMD_FOLDER = "tmd" + File.separator;
 	public static final String OTC_RESULTS_EXPECTED_FOLDER = "results_expected" + File.separator;
@@ -233,6 +236,7 @@ public enum OtcConfig {
 
 	private static YamlConfig loadOtcConfig(String otcConfigLocation) {
 		try {
+			LOGGER.info("Loading OTC config file '{}' from {}", OTC_CONFIG_FILE, otcConfigLocation);
 			return YamlSerializationHelper.deserialize(otcConfigLocation + OTC_CONFIG_FILE, YamlConfig.class);
 		} catch (Exception ex) {
 			throw new OtcConfigException(ex);
@@ -258,13 +262,13 @@ public enum OtcConfig {
 
 	public static String getOtcConfigLocation() {
 		try {
-			// -- this below line is to only check if file exists. If file is not present an exception is thrown.
-			OtcConfig.class.getClassLoader().getResource("." + File.separator + OTC_CONFIG_FILE);
-
-			return Paths.get(OtcConfig.class.getClassLoader().getResource(".").toURI()) + File.separator;
-		} catch (URISyntaxException e) {
+			URL otcConfigUrl = new URL(OtcConfig.class.getClassLoader().getResource(".") + OTC_CONFIG_FILE);
+			if (Paths.get(otcConfigUrl.toURI()).toFile().exists()) {
+				return Paths.get(OtcConfig.class.getClassLoader().getResource(".").toURI()) + File.separator;
+			}
+		} catch (URISyntaxException | MalformedURLException | NullPointerException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
-		return otcHome;
+		return otcHome + OTC_CONFIG_FOLDER;
 	}
 }
