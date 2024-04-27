@@ -64,7 +64,7 @@ public enum OtcConfig {
 
 	private static final YamlConfig YAML_CONFIG;
 	private static String sourceCodeDirectory;
-	private static String tmdDirectory;
+	private static String configuredTmdDirectory;
 	private static final Integer DEFAULT_CYCLIC_REFERENCE_DEPTH = 2;
 
 	/**
@@ -81,9 +81,9 @@ public enum OtcConfig {
 		// -- load sourceCodeLocation and tmdLocation properties
 		if (Objects.nonNull(YAML_CONFIG.compiler) && Objects.nonNull(YAML_CONFIG.compiler.paths)) {
 			sourceCodeDirectory = YAML_CONFIG.compiler.paths.sourceCodeDirectory;
-			tmdDirectory = YAML_CONFIG.compiler.paths.tmdDirectory;
+			configuredTmdDirectory = YAML_CONFIG.compiler.paths.tmdDirectory;
 			boolean isSourceCodeDirectoryDefined = !CommonUtils.isTrimmedAndEmpty(sourceCodeDirectory);
-			boolean isTmdDirectoryDefined = !CommonUtils.isTrimmedAndEmpty(tmdDirectory);
+			boolean isTmdDirectoryDefined = !CommonUtils.isTrimmedAndEmpty(configuredTmdDirectory);
 			if (isSourceCodeDirectoryDefined != isTmdDirectoryDefined) {
 				throw new OtcConfigException("", String.format("Either BOTH or NONE of this set of 2 properties " +
 								"('compiler.paths.sourceCodeDirectory:', 'compiler.paths.tmdDirectory:) should be" +
@@ -97,29 +97,9 @@ public enum OtcConfig {
 						"Updated source-code if any in ${OTC_HOME} '{}' will be lost during clean-up.", otcHome);
 			}
 		}
-		sourceCodeDirectory = initFolder(sourceCodeDirectory, OTC_SRC_FOLDER);
-		if (!CommonUtils.isTrimmedAndEmpty(tmdDirectory)) {
-			if (!tmdDirectory.endsWith(File.separator)) {
-				tmdDirectory += File.separator;
-			}
-			tmdDirectory += OTC_TMD_FOLDER;
-		} else {
-			tmdDirectory = otcConfigLocation + OTC_TMD_FOLDER;
-		}
+		sourceCodeDirectory = getSourceCodeLocation(sourceCodeDirectory);
 		Set<String> filteredPackages = YAML_CONFIG.filterPackages;
 		PackagesFilterUtil.setFilteredPackages(filteredPackages);
-	}
-
-	private static String initFolder(String configuredPath, String defaultPath) {
-		String path = configuredPath;
-		if (!CommonUtils.isTrimmedAndEmpty(configuredPath)) {
-			if (!configuredPath.endsWith(File.separator)) {
-				path += File.separator;
-			}
-		} else {
-			path = otcHome + defaultPath;
-		}
-		return path;
 	}
 
 	public static boolean isDefaultLocations() {
@@ -161,10 +141,7 @@ public enum OtcConfig {
 	 * @return the source code location
 	 */
 	public static String getSourceCodeDirectoryPath() {
-		if (!CommonUtils.isTrimmedAndEmpty(sourceCodeDirectory)) {
-			return sourceCodeDirectory;
-		}
-		return otcHome + OTC_SRC_FOLDER;
+		return sourceCodeDirectory;
 	}
 
 	public static Integer getCyclicReferenceDepth() {
@@ -173,18 +150,6 @@ public enum OtcConfig {
 			return YAML_CONFIG.compiler.cyclicReferenceDepthLimit;
 		}
 		return DEFAULT_CYCLIC_REFERENCE_DEPTH;
-	}
-
-	/**
-	 * Gets the otc tmd location.
-	 *
-	 * @return the otc tmd location
-	 */
-	public static String getOtcTmdDirectoryPath() {
-		if (!CommonUtils.isTrimmedAndEmpty(tmdDirectory)) {
-			return tmdDirectory;
-		}
-		return otcHome + OTC_TMD_FOLDER;
 	}
 
 	/**
@@ -260,15 +225,68 @@ public enum OtcConfig {
 		return otcHome;
 	}
 
-	public static String getOtcConfigLocation() {
+	private static String getResourceLocation(String resourceName) {
 		try {
-			URL otcConfigUrl = new URL(OtcConfig.class.getClassLoader().getResource(".") + OTC_CONFIG_FILE);
+			URL otcConfigUrl = new URL(OtcConfig.class.getClassLoader().getResource(".") + resourceName);
 			if (Paths.get(otcConfigUrl.toURI()).toFile().exists()) {
 				return Paths.get(OtcConfig.class.getClassLoader().getResource(".").toURI()) + File.separator;
 			}
 		} catch (URISyntaxException | MalformedURLException | NullPointerException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
+		return null;
+	}
+
+	public static String getOtcConfigLocation() {
+		String otcConfigLocation = getResourceLocation(OTC_CONFIG_FILE);
+		if (otcConfigLocation != null) {
+			return otcConfigLocation;
+		}
 		return otcHome + OTC_CONFIG_FOLDER;
+	}
+
+	private static String getSourceCodeLocation(String configuredPath) {
+		String path = configuredPath;
+		if (!CommonUtils.isTrimmedAndEmpty(configuredPath)) {
+			if (!configuredPath.endsWith(File.separator)) {
+				path += File.separator;
+			}
+			LOGGER.info("Picked configured 'compiler.paths.sourceCodeDirectory:' location - {} ", path);
+		} else {
+			path = otcHome + OTC_SRC_FOLDER;
+			LOGGER.info("'compiler.paths.sourceCodeDirectory:' not configured - picking ${OTC_HOME} 'src' folder location - {} ",
+					path);
+		}
+		return path;
+	}
+
+	public static String getConfiguredTmdLocation() {
+		if (!CommonUtils.isTrimmedAndEmpty(configuredTmdDirectory)) {
+			if (!configuredTmdDirectory.endsWith(File.separator)) {
+				configuredTmdDirectory += File.separator;
+			}
+			configuredTmdDirectory += OTC_TMD_FOLDER;
+			LOGGER.info("Returning configured \"compiler.paths.tmdDirectory:\" location - {}", configuredTmdDirectory);
+			return configuredTmdDirectory;
+		}
+		String otcHomeTmdLocation = otcHome + OTC_TMD_FOLDER;
+		LOGGER.info("\"compiler.paths.tmdDirectory:\" location not configured - picking ${OTC_HOME} 'tmd' location - {}",
+				otcHomeTmdLocation);
+		return otcHomeTmdLocation;
+	}
+
+	public static String getClasspathTmdLocation() {
+		String otcClasspathTmdLocation = getResourceLocation(OTC_TMD_FOLDER);
+		if (!CommonUtils.isTrimmedAndEmpty(otcClasspathTmdLocation)) {
+			if (!otcClasspathTmdLocation.endsWith(File.separator)) {
+				otcClasspathTmdLocation += File.separator;
+			}
+			otcClasspathTmdLocation += OTC_TMD_FOLDER;
+			LOGGER.info("Found './tmd/' folder in classpath : {}", otcClasspathTmdLocation);
+			return otcClasspathTmdLocation;
+		}
+		otcClasspathTmdLocation = otcHome + OTC_TMD_FOLDER;
+		LOGGER.info("Did not find './tmd/' folder in classpath - returning OTC_HOME 'tmd' location - {} ", otcClasspathTmdLocation);
+		return otcClasspathTmdLocation;
 	}
 }

@@ -46,9 +46,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,7 +64,7 @@ public enum OtcRegistryImpl implements OtcRegistry {
 	private static final Map<String, RegistryDto> mapPackagedOtcDtos = new HashMap<>();
 
 	/** The Constant depFileFilter. */
-	private static final FileFilter depFileFilter = CommonUtils.createFilenameFilter(OtcConstants.OTC_TMD_EXTN);
+	private static final FileFilter tmdFileFilter = CommonUtils.createFilenameFilter(OtcConstants.OTC_TMD_EXTN);
 
 	/** The Constant objectMapper. */
 	private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -83,8 +80,8 @@ public enum OtcRegistryImpl implements OtcRegistry {
 	 */
 	@Override
 	public void register() {
-		File directory = new File(OtcConfig.getOtcTmdDirectoryPath());
-		File[] files = directory.listFiles(depFileFilter);
+		File directory = new File(OtcConfig.getClasspathTmdLocation());
+		File[] files = directory.listFiles(tmdFileFilter);
 		if (files == null) {
 			return;
 		}

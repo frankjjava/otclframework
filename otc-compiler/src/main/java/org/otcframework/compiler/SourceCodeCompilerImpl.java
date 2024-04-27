@@ -91,10 +91,10 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 	public void compileSourceCode() {
 		LOGGER.info("Compiling source-code files. Please wait.......");
 		long startTime = System.nanoTime();
-		File tmdDir = new File(OTC_TMD_LOCATION);
+		File tmdDir = new File(OTC_CONFIGURED_TMD_LOCATION);
 		File[] files = tmdDir.listFiles(TMD_FILE_FILTER);
 		if (files == null) {
-			LOGGER.info("No Token-Metadata file(s) found in '{}' for registration", OTC_TMD_LOCATION);
+			LOGGER.info("No Token-Metadata file(s) found in '{}' for registration", OTC_CONFIGURED_TMD_LOCATION);
 			return;
 		}
 		List<RegistryDto> registryDtos = null;

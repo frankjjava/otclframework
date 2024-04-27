@@ -10,7 +10,7 @@ import java.io.IOException;
 
 abstract class AbstractCompiler {
 
-    protected static final String OTC_TMD_LOCATION = OtcConfig.getOtcTmdDirectoryPath();
+    protected static final String OTC_CONFIGURED_TMD_LOCATION = OtcConfig.getConfiguredTmdLocation();
     /** The Constant srcDir. */
     protected static final String SOURCE_CODE_LOCATION = OtcConfig.getSourceCodeDirectoryPath();
 
