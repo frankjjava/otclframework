@@ -201,7 +201,7 @@ public enum OtcConfig {
 
 	private static YamlConfig loadOtcConfig(String otcConfigLocation) {
 		try {
-			LOGGER.info("Loading OTC config file '{}' from {}", OTC_CONFIG_FILE, otcConfigLocation);
+			LOGGER.info("Loading OTC config file '{}' from classpath - {}", OTC_CONFIG_FILE, otcConfigLocation);
 			return YamlSerializationHelper.deserialize(otcConfigLocation + OTC_CONFIG_FILE, YamlConfig.class);
 		} catch (Exception ex) {
 			throw new OtcConfigException(ex);
@@ -266,7 +266,7 @@ public enum OtcConfig {
 				configuredTmdDirectory += File.separator;
 			}
 			configuredTmdDirectory += OTC_TMD_FOLDER;
-			LOGGER.info("Returning configured \"compiler.paths.tmdDirectory:\" location - {}", configuredTmdDirectory);
+			LOGGER.info("Picked configured \"compiler.paths.tmdDirectory:\" location - {}", configuredTmdDirectory);
 			return configuredTmdDirectory;
 		}
 		String otcHomeTmdLocation = otcHome + OTC_TMD_FOLDER;

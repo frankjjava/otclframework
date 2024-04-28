@@ -209,7 +209,7 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 			createRegistrationFile(registryDto);
 		} else {
 			javaFileObjects.forEach(javaFile ->
-				LOGGER.debug("Compiled source code : {}", javaFile.getName()));
+				LOGGER.info("Compiled source code : {}", javaFile.getName()));
 		}
 	}
 }
