@@ -1,0 +1,526 @@
+@startuml
+
+/' diagram meta data start
+config=StructureConfiguration;
+{
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "includedProjects": "",
+    "pathEndKeywords": "*.impl",
+    "isClientPath": "",
+    "isClientName": "",
+    "isTestPath": "",
+    "isTestName": "",
+    "isMappingPath": "",
+    "isMappingName": "",
+    "isDataAccessPath": "",
+    "isDataAccessName": "",
+    "isDataStructurePath": "",
+    "isDataStructureName": "",
+    "isInterfaceStructuresPath": "",
+    "isInterfaceStructuresName": "",
+    "isEntryPointPath": "",
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": true,
+    "cutClient": true,
+    "cutDataAccess": false,
+    "cutInterfaceStructures": false,
+    "cutDataStructures": false,
+    "cutGetterAndSetter": true,
+    "cutConstructors": true
+  },
+  "graphTraversal": {
+    "forwardDepth": 6,
+    "backwardDepth": 6,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "hideMappings": false,
+    "hideDataStructures": false,
+    "hidePrivateMethods": true,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
+  },
+  "details": {
+    "aggregation": "GroupByClass", // ByClass, GroupByClass, None
+    "showClassGenericTypes": true,
+    "showMethods": true,
+    "showMethodParameterNames": true,
+    "showMethodParameterTypes": true,
+    "showMethodReturnType": true,
+    "showPackageLevels": 2,
+    "showDetailedClassStructure": true
+  },
+  "rootClass": "org.otcframework.executor.OtcExecutorImpl",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
+}
+diagram meta data end '/
+
+
+
+digraph g {
+    rankdir="TB"
+    splines=polyline
+    
+
+'nodes 
+subgraph cluster_1721525408 { 
+   	label=otcframework
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   subgraph cluster_1153758969 { 
+   	label=common
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   ClassDto3592096[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ClassDto</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   className: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   codeBuilder: StringBuilder [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   fullyQualifiedClassName: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   imports: Map&lt;String, String&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   packageName: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ addImport(fqTypeName: String): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ clearImports()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ retrieveImportFqNames(): Collection&lt;String&gt;</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+CommonCommandParams371722755[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)CommonCommandParams</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   debug: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   disable: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   factoryClassName: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   id: String [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+CommonUtils110848607[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)CommonUtils</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ createFilenameFilter(ext: String): FileFilter</TD></TR>
+<TR><TD ALIGN="LEFT" >+ initCap(str: String): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ initLower(str: String): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ isTrimmedAndEmpty(str: String): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ replaceLast(orginalStr: String, searchStr: String, replaceStr: String): String</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Copy371722755[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Copy</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   from: Source [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   to: TargetDto [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Execute371722755[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Execute</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   converter: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   executionOrder: List&lt;String&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   module: OtclModule [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   source: SourceDto [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   target: TargetDto [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+IndexedCollectionsDto337354205[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)IndexedCollectionsDto</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   children: Map&lt;String, IndexedCollectionsDto&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   id: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   indexedObject: Object [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+IndexedCollectionsDtoFactory1697592576[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)IndexedCollectionsDtoFactory</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ create(parentICD: IndexedCollectionsDto, value: Object, idxStr: String, hasChildren: boolean): IndexedCollectionsDto</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+OtcChainDto3592096[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)OtcChainDto</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   collectionCount: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   dictionaryCount: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   otcChain: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   otcTokens: String[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   rawOtcTokens: String[] [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ newBuilder(): Builder</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+OtcCommandContext1797805378[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)OtcCommandContext</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   collectionsCount: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   commandId: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   currentCollectionTokenIndex: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   indexedCollectionsDto: IndexedCollectionsDto [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   otcChain: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   otcCommandDto: OtcCommandDto [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   otcTokens: String[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   rawOtcTokens: String[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   scriptDto: ScriptDto [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ clone(): OtcCommandContext</TD></TR>
+<TR><TD ALIGN="LEFT" >+ descendantsCollectionsCountInclusive(): int</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+OtcCommandDto3592096[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)OtcCommandDto</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   children: Map&lt;String, OtcCommandDto&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   collectionDescriptor: CollectionDescriptor [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   concreteType: Class&lt;?&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   concreteTypeName: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   declaringClass: Class&lt;?&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   enableGetterHelper: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   enableSetterHelper: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   enumTargetSource: TARGET_SOURCE [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   field: Field [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   fieldName: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   fieldType: Class&lt;?&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   getter: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   hasCollectionNotation: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   hasMapNotation: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   isFirstNode: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   isGetterInitialized: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   isRootNode: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   isSetterInitialized: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   mapKeyConcreteType: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   mapValueConcreteType: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   occursInCommands: List&lt;String&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   otcToken: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   otcTokenIndex: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   parent: OtcCommandDto [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   setter: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   tokenPath: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ addChild(otcCommandDto: OtcCommandDto)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addCommandId(commandId: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ newBuilder(): Builder</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+OtcReflectionUtil110848607[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)OtcReflectionUtil</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- createMethodNotFoundMessage(clz: Class&lt;?&gt;, methodName: String, paramTypes: Class&lt;?&gt;[], otcCommandDto: OtcCommandDto): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findFactoryHelperMethod(factoryHelper: Class&lt;?&gt;, enumGetterSetter: GETTER_SETTER, otcCommandDto: OtcCommandDto, fieldType: Class&lt;?&gt;): Method</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findField(clazz: Class&lt;?&gt;, name: String): Field</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findField(clazz: Class&lt;?&gt;, name: String, type: Class&lt;?&gt;): Field</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findGetterName(otcCommandDto: OtcCommandDto): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findHelperMethodName(factoryHelper: Class&lt;?&gt;, enumGetterSetter: GETTER_SETTER, otcCommandDto: OtcCommandDto, fieldType: Class&lt;?&gt;): String</TD></TR>
+<TR><TD ALIGN="LEFT" >- findMethod(enumGetterSetter: GETTER_SETTER, methodName: String, otcCommandDto: OtcCommandDto): Method</TD></TR>
+<TR><TD ALIGN="LEFT" >- findMethod(clz: Class&lt;?&gt;, methodName: String, otcCommandDto: OtcCommandDto, paramTypes: Class&lt;?&gt;...): Method</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findSetterName(otcCommandDto: OtcCommandDto): String</TD></TR>
+<TR><TD ALIGN="LEFT" >- getDeclaredFields(clazz: Class&lt;?&gt;): Field[]</TD></TR>
+<TR><TD ALIGN="LEFT" >+ readFieldValue(field: Field, value: Object): Object</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+OtcUtils110848607[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)OtcUtils</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ createOtcFileName(sourceClz: String, targetClz: String): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ createRegistryId(otcNamespace: String, source: Object, targetClz: Class&lt;?&gt;): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ createRegistryId(otcNamespace: String, targetClz: Class&lt;?&gt;): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ createRegistryId(otcNamespace: String, sourceClz: Class&lt;?&gt;, targetClz: Class&lt;?&gt;): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ createRegistryId(otcNamespace: String, sourceClz: String, targetClz: String): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ createURLs(directory: File, fileFilter: FileFilter): List&lt;URL&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ creteDirectory(path: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ creteDirectory(file: File)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ deleteFileOrFolder(path: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ fetchCurrentURLClassLoader(): URLClassLoader</TD></TR>
+<TR><TD ALIGN="LEFT" >+ loadClass(clzName: String): Class&lt;?&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ loadURLClassLoader(path: String): URLClassLoader</TD></TR>
+<TR><TD ALIGN="LEFT" >+ retrieveIndexCharacter(otcToken: String): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ retrieveLeafOCD(mapOCDs: Map&lt;String, OtcCommandDto&gt;, rawOtcChain: String): OtcCommandDto</TD></TR>
+<TR><TD ALIGN="LEFT" >- retrieveNextOCD(mapOCDs: Map&lt;String, OtcCommandDto&gt;, ocdKey: String): OtcCommandDto</TD></TR>
+<TR><TD ALIGN="LEFT" >+ sanitizeOtc(otcChain: String): String</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+OtclModule1772947862[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)OtclModule</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   namespace: String [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ScriptDto3592096[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ScriptDto</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   command: CommonCommandParams [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   hasExecuteConverter: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   hasExecuteModule: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   hasExecutionOrder: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   hasSetValues: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   sourceOtcChainDto: OtcChainDto [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   targetOtcChainDto: OtcChainDto [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Source1693115232[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Source</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   values: List&lt;String&gt; [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+SourceDto1659856752[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)SourceDto</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   objectPath: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   overrides: List&lt;OverrideDto&gt; [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TargetDto1659856752[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TargetDto</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   objectPath: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   overrides: List&lt;Override&gt; [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_663399981 { 
+   	label=compiler
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   SourceOtcCommandContext852918016[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)SourceOtcCommandContext</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ clone(): SourceOtcCommandContext</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TargetOtcCommandContext852918016[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TargetOtcCommandContext</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   algorithmId: ALGORITHM_ID [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   anchorIndex: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   executeModuleOtcNamespace: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   executeOtcConverter: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   factoryClassDto: ClassDto [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   hasAnchorInChain: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   hasExecuteConverter: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   hasExecuteModule: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   hasPostAnchor: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   hasPreAnchor: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   helper: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   loopsCounter: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   mainClassDto: ClassDto [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ appendCode(code: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ appendCode(code: StringBuilder)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ clone(): TargetOtcCommandContext</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_989021599 { 
+   	label=executor
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   ObjectIndexerImpl1420553943[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ObjectIndexerImpl</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ indexObject(registryDto: RegistryDto, enumTargetSource: TARGET_SOURCE, indexedObject: Object): IndexedCollectionsDto</TD></TR>
+<TR><TD ALIGN="LEFT" >- indexObject(otcCommandContext: OtcCommandContext, indexedObject: Object, parentICD: IndexedCollectionsDto): IndexedCollectionsDto</TD></TR>
+<TR><TD ALIGN="LEFT" >- indexTheCollection(otcCommandContext: OtcCommandContext, indexedObject: Object, parentICD: IndexedCollectionsDto)</TD></TR>
+<TR><TD ALIGN="LEFT" >- indexTheMap(otcCommandContext: OtcCommandContext, indexedObject: Object, parentICD: IndexedCollectionsDto)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+OtcExecutorImpl1420553943[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)OtcExecutorImpl</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ copyFromLiterals(otcNamespace: String, targetClz: Class&lt;T&gt;): T</TD></TR>
+<TR><TD ALIGN="LEFT" >+ copyFromLiterals(otcNamespace: String, targetClz: Class&lt;T&gt;, data: Map&lt;String, Object&gt;): T</TD></TR>
+<TR><TD ALIGN="LEFT" >+ copyFromSource(otcNamespace: String, source: S, targetClz: Class&lt;T&gt;): T</TD></TR>
+<TR><TD ALIGN="LEFT" >+ copyFromSource(otcNamespace: String, source: S, targetClz: Class&lt;T&gt;, data: Map&lt;String, Object&gt;): T</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+} 
+
+'edges    
+CommonCommandParams371722755 -> Copy371722755[arrowhead=none, arrowtail=empty, dir=both];
+CommonCommandParams371722755 -> Execute371722755[arrowhead=none, arrowtail=empty, dir=both];
+Copy371722755 -> Source1693115232[label="from
+[0..1]"];
+Copy371722755 -> TargetDto1659856752[label="to
+[0..1]"];
+Execute371722755 -> OtclModule1772947862[label="module
+[0..1]"];
+Execute371722755 -> SourceDto1659856752[label="source
+[0..1]"];
+Execute371722755 -> TargetDto1659856752[label="target
+[0..1]"];
+ObjectIndexerImpl1420553943 -> CommonUtils110848607[label="indexObject() -> isTrimmedAndEmpty()"];
+ObjectIndexerImpl1420553943 -> OtcUtils110848607[label="indexObject() -> sanitizeOtc()"];
+OtcCommandContext1797805378 -> IndexedCollectionsDto337354205[label="indexedCollectionsDto
+[0..1]"];
+OtcCommandContext1797805378 -> OtcCommandDto3592096[label="otcCommandDto
+[0..1]"];
+OtcCommandContext1797805378 -> ScriptDto3592096[label="scriptDto
+[0..1]"];
+OtcCommandContext1797805378 -> SourceOtcCommandContext852918016[arrowhead=none, arrowtail=empty, dir=both];
+OtcCommandContext1797805378 -> TargetOtcCommandContext852918016[arrowhead=none, arrowtail=empty, dir=both];
+OtcExecutorImpl1420553943 -> ObjectIndexerImpl1420553943[arrowhead=none];
+OtcExecutorImpl1420553943 -> OtcUtils110848607[label="copyFromSource() -> createRegistryId()"];
+ScriptDto3592096 -> CommonCommandParams371722755[label="command
+[0..1]"];
+ScriptDto3592096 -> OtcChainDto3592096[label="sourceOtcChainDto
+[0..1]"];
+ScriptDto3592096 -> OtcChainDto3592096[label="targetOtcChainDto
+[0..1]"];
+TargetOtcCommandContext852918016 -> ClassDto3592096[label="factoryClassDto
+[0..1]"];
+TargetOtcCommandContext852918016 -> ClassDto3592096[label="mainClassDto
+[0..1]"];
+    
+}
+@enduml

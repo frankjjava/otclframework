@@ -1,0 +1,30 @@
+@startuml
+actor User
+participant OtcCodeGeneratorImpl
+participant CopyValuesCommandCodeGenerator
+participant ExecuteCommandCodeGenerator
+participant CopyCollectionPathsCodeGenerator
+participant CopyFlatAndMixedPathsCodeGenerator
+participant MethodEndTemplate
+
+User -> OtcCodeGeneratorImpl: getInstance()
+User -> OtcCodeGeneratorImpl: generateSourcecode(otcDto)
+OtcCodeGeneratorImpl -> OtcCodeGeneratorImpl: generateSourceCodeFile(otcDto, otcFileDto, mainClassDto)
+
+activate OtcCodeGeneratorImpl
+OtcCodeGeneratorImpl -> CopyValuesCommandCodeGenerator: generateSourceCode(executionContext)
+deactivate CopyValuesCommandCodeGenerator
+
+OtcCodeGeneratorImpl -> ExecuteCommandCodeGenerator: generateSourceCode(executionContext)
+deactivate ExecuteCommandCodeGenerator
+
+OtcCodeGeneratorImpl -> CopyCollectionPathsCodeGenerator: generateSourceCode(executionContext)
+deactivate CopyCollectionPathsCodeGenerator
+
+OtcCodeGeneratorImpl -> CopyFlatAndMixedPathsCodeGenerator: generateSourceCode(executionContext)
+deactivate CopyFlatAndMixedPathsCodeGenerator
+
+OtcCodeGeneratorImpl -> MethodEndTemplate: generateCode(rootTargetVariable)
+deactivate MethodEndTemplate
+deactivate OtcCodeGeneratorImpl
+@enduml
