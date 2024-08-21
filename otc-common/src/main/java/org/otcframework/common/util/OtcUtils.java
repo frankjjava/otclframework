@@ -132,7 +132,7 @@ public class OtcUtils {
 			registryId = sourceClz + "_" + targetClz;
 		}
 		if (!CommonUtils.isTrimmedAndEmpty(otcNamespace)) {
-			registryId = otcNamespace + "." + registryId;
+			registryId = otcNamespace + "->" + registryId;
 		}
 		return registryId;
 	}
@@ -276,8 +276,8 @@ public class OtcUtils {
 			} else {
 				try {
 					if (file.getName().endsWith(".jar")) {
-						URL url = file.toURI().toURL();
-						url = new URL("jar:file:" + file.getAbsolutePath() + "!/");
+//						URL url = file.toURI().toURL();
+						URL url = new URL("jar:file:" + file.getAbsolutePath() + "!/");
 						urls.add(url);
 					}
 				} catch (MalformedURLException e) {
@@ -332,6 +332,10 @@ public class OtcUtils {
 
 	public static void creteDirectory(String path) {
 		File file = new File(path);
+		creteDirectory(file);
+	}
+
+	public static void creteDirectory(File file) {
 		if (!file.exists()) {
 			file.mkdirs();
 		}

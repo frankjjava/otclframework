@@ -67,6 +67,12 @@ public final class OtcExecutorImpl implements OtcExecutor {
 		return otcExecutor;
 	}
 
+
+	@Override
+	public <T> T copyFromLiterals(String otcNamespace, Class<T> targetClz) {
+		return copyFromSource(otcNamespace, null, targetClz, null);
+	}
+
 	/**
 	 * Execute otc.
 	 *
@@ -77,8 +83,13 @@ public final class OtcExecutorImpl implements OtcExecutor {
 	 * @return the t
 	 */
 	@Override
-	public <T> T execute(String otcNamespace, Class<T> targetClz, Map<String, Object> data) {
-		return execute(otcNamespace, null, targetClz, data);
+	public <T> T copyFromLiterals(String otcNamespace, Class<T> targetClz, Map<String, Object> data) {
+		return copyFromSource(otcNamespace, null, targetClz, data);
+	}
+
+	@Override
+	public <T, S> T copyFromSource(String otcNamespace, S source, Class<T> targetClz) {
+		return copyFromSource(otcNamespace, source, targetClz, null);
 	}
 
 	/**
@@ -93,7 +104,7 @@ public final class OtcExecutorImpl implements OtcExecutor {
 	 * @return the t
 	 */
 	@Override
-	public <T, S> T execute(String otcNamespace, S source, Class<T> targetClz, Map<String, Object> data) {
+	public <T, S> T copyFromSource(String otcNamespace, S source, Class<T> targetClz, Map<String, Object> data) {
 		RegistryDto registryDto = otcRegistry.retrieveRegistryDto(otcNamespace, source, targetClz);
 		if (registryDto == null) {
 			String otcFile = OtcUtils.createRegistryId(otcNamespace, source, targetClz)
@@ -109,4 +120,5 @@ public final class OtcExecutorImpl implements OtcExecutor {
 		CodeExecutor<S, T> codeExecutor = registryDto.codeExecutor;
 		return codeExecutor.execute(source, indexedCollectionsDto, data);
 	}
+
 }

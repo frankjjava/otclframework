@@ -35,6 +35,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.tools.*;
 import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,12 +51,6 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 
 	/** The Constant otcCompilerImpl. */
 	private static final SourceCodeCompiler SOURCE_CODE_COMPILER = new SourceCodeCompilerImpl();
-
-	/** The Constant srcDir. */
-	private static final String SOURCE_CODE_LOCATION = OtcConfig.getSourceCodeDirectoryPath();
-
-	/** The Constant otcTargetDir. */
-	private static final String OTC_TARGET_LOCATION = OtcConfig.getTargetDirectoryPath();
 
 	/** The Constant depFileFilter. */
 	private static final FileFilter TMD_FILE_FILTER = CommonUtils.createFilenameFilter(OtcConstants.OTC_TMD_EXTN);
@@ -76,12 +72,7 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 				otcLibClassPath.append(File.pathSeparator + file.getAbsolutePath());
 			}
 		}
-		if (otcLibClassPath == null || otcLibClassPath.length() == 0) {
-			optionList.add(System.getProperty("java.class.path") + File.pathSeparator + OTC_TARGET_LOCATION);
-		} else {
-			optionList.add(System.getProperty("java.class.path") + File.pathSeparator + OTC_TARGET_LOCATION
-					+ otcLibClassPath.toString());
-		}
+		optionList.add(System.getProperty("java.class.path") + File.pathSeparator);
 	}
 
 	/**
@@ -100,10 +91,10 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 	public void compileSourceCode() {
 		LOGGER.info("Compiling source-code files. Please wait.......");
 		long startTime = System.nanoTime();
-		File binDir = new File(OTC_TMD_LOCATION);
-		File[] files = binDir.listFiles(TMD_FILE_FILTER);
+		File tmdDir = new File(OTC_CONFIGURED_TMD_LOCATION);
+		File[] files = tmdDir.listFiles(TMD_FILE_FILTER);
 		if (files == null) {
-			LOGGER.info("No Token-Metadata file(s) found in '{}' for registration", OTC_TMD_LOCATION);
+			LOGGER.info("No Token-Metadata file(s) found in '{}' for registration", OTC_CONFIGURED_TMD_LOCATION);
 			return;
 		}
 		List<RegistryDto> registryDtos = null;
@@ -186,7 +177,15 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 	private void compileSourceCode(List<JavaFileObject> javaFileObjects, RegistryDto registryDto) {
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-		File fileClzPathRoot = new File(OTC_TARGET_LOCATION);
+		File fileClzPathRoot = null;
+		try {
+			fileClzPathRoot = Paths.get(OtcConfig.class.getClassLoader().getResource(".").toURI()).toFile();
+		} catch (URISyntaxException e) {
+			throw new OtcCompilerException(e);
+		}
+		if (OtcConfig.isDefaultLocations()) {
+			OtcUtils.creteDirectory(fileClzPathRoot);
+		}
 		try {
 			fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(fileClzPathRoot));
 			File fileSrcPathRoot = new File(SOURCE_CODE_LOCATION);
@@ -210,7 +209,7 @@ public final class SourceCodeCompilerImpl extends AbstractCompiler implements So
 			createRegistrationFile(registryDto);
 		} else {
 			javaFileObjects.forEach(javaFile ->
-				LOGGER.debug("Compiled source code : {}", javaFile.getName()));
+				LOGGER.info("Compiled source code : {}", javaFile.getName()));
 		}
 	}
 }

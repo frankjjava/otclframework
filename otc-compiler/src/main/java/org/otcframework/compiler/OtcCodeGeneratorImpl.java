@@ -167,8 +167,8 @@ final class OtcCodeGeneratorImpl extends AbstractOtcCodeGenerator implements Otc
 						CopyFlatAndMixedPathsCodeGenerator.generateSourceCode(executionContext);
 					}
 				}
-				LOGGER.debug("Generated source-code '{}.java' for Command-Id : {} {}", scriptDto.command.id,
-						scriptDto.command.id, scriptDto.command.factoryClassName);
+				LOGGER.info("Generated source-code '{}.java' for OTC command with Id : {}",
+						scriptDto.command.factoryClassName, scriptDto.command.id);
 			} catch (Exception ex) {
 				LOGGER.error("Error while compiling OTC-Command with Id : {}", scriptDto.command.id);
 				throw new CodeGeneratorException(ex);

@@ -55,7 +55,7 @@ public abstract class AbstractOtcModuleExecutor {
 		LOGGER.debug("{} called!", AbstractOtcModuleExecutor.class.getName());
 		T newTarget = null;
 		try {
-			newTarget = (T) otcExecutor.execute(otcNamespace, source, target.getClass(), config);
+			newTarget = (T) otcExecutor.copyFromSource(otcNamespace, source, target.getClass(), config);
 		} catch (Exception ex) {
 			LOGGER.error(ex.getMessage());
 		}

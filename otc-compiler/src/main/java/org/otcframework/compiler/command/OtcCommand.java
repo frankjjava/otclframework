@@ -54,9 +54,6 @@ public class OtcCommand {
 	/** The Constant CODE_TO_IMPORT. */
 	public static final String CODE_TO_IMPORT = "CODE_TO_IMPORT";
 
-	/** The Constant otcBinDir. */
-	private static final String TARGET_LOCATION = OtcConfig.getTargetDirectoryPath();
-
 	/** The Constant sourceFileLocation. */
 	private static final String SOURCE_CODE_FOLDER = OtcConfig.getSourceCodeDirectoryPath();
 
@@ -292,17 +289,6 @@ public class OtcCommand {
 	 */
 	private void appendBeginClass(TargetOtcCommandContext targetOCC, SourceOtcCommandContext sourceOCC,
 			Class<?> targetClz, Class<?> sourceClz, boolean addLogger, boolean isModule) {
-		String fileName = targetOCC.factoryClassDto.fullyQualifiedClassName.replace(".", File.separator);
-		try {
-			OtcUtils.deleteFileOrFolder(TARGET_LOCATION + fileName + OtcConstants.CLASS_EXTN);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
-		}
-		try {
-			OtcUtils.deleteFileOrFolder(SOURCE_CODE_FOLDER + fileName + OtcConstants.SOURCE_CODE_EXTN);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
-		}
 		targetOCC.factoryClassDto.codeBuilder = new StringBuilder();
 		targetOCC.factoryClassDto.clearImports();
 		targetOCC.factoryClassDto.addImport(Map.class.getName());

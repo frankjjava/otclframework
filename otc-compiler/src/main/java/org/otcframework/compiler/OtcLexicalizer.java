@@ -195,7 +195,7 @@ final class OtcLexicalizer {
                 LOGGER.warn("Ignoring disabled OTC-command : {}", commandId);
                 return;
             }
-            LOGGER.debug("Compiling OTC-command : {}", commandId);
+            LOGGER.info("Compiling OTC-command : {}", commandId);
             validateScriptIds(scriptIds, commandId);
             scriptIds.add(commandId);
             String targetOtcChain = null;

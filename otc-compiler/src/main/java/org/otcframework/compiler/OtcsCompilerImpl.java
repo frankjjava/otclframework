@@ -83,6 +83,12 @@ public final class OtcsCompilerImpl extends AbstractCompiler implements OtcsComp
 		if (!unitTestDirectory.exists()) {
 			throw new OtcCompilerException("", String.format("Missing '%s' folder.", UNIT_TEST_LOCATION));
 		}
+		if (OtcConfig.isDefaultLocations() && OtcConfig.getCleanupBeforeCompile()) {
+			OtcUtils.deleteFileOrFolder(SOURCE_CODE_LOCATION);
+			OtcUtils.deleteFileOrFolder(OTC_CONFIGURED_TMD_LOCATION);
+		}
+		OtcUtils.creteDirectory(SOURCE_CODE_LOCATION);
+		OtcUtils.creteDirectory(OTC_CONFIGURED_TMD_LOCATION);
 		List<CompilationReport> compilationReports = compileAll(unitTestDirectory, null);
 		if (compilationReports == null) {
 			LOGGER.info("No OTCS files to compile in '{}'", UNIT_TEST_LOCATION);
@@ -138,7 +144,7 @@ public final class OtcsCompilerImpl extends AbstractCompiler implements OtcsComp
 				if (!CommonUtils.isTrimmedAndEmpty(compilationReport.otcNamespace)) {
 					tmdFileName = compilationReport.otcNamespace + "." + tmdFileName;
 				}
-				tmdFileName = OTC_TMD_LOCATION + tmdFileName;
+				tmdFileName = OTC_CONFIGURED_TMD_LOCATION + tmdFileName;
 				RegistryDto registryDto = createRegistryDto(compilationReport);
 				registryDto.registryFileName = tmdFileName;
 				createRegistrationFile(registryDto);
@@ -221,12 +227,12 @@ public final class OtcsCompilerImpl extends AbstractCompiler implements OtcsComp
 				.addOtcNamespace(otcNamespace).addOtcFileName(otcFileName);
 		String message = null;
 		try {
-			LOGGER.info("Compiling OTCS file : {}->{}", otcNamespace, otcFileName);
+			LOGGER.info("Compiling OTC Script file : {}->{}", otcNamespace, otcFileName);
 			long startTime = System.nanoTime();
 			otcDto = OtcLexicalizer.lexicalize(file, otcNamespace);
 			if (otcDto.scriptDtos == null || otcDto.scriptDtos.isEmpty()) {
 				throw new CodeGeneratorException("",
-						"No OTC commmands to execute! " + "OTC-Scripts are missing or none are enabled.");
+						"No OTC commmands to execute! OTC-Scripts are missing or none are enabled.");
 			}
 			ClassDto mainClassDto = new ClassDto();
 			otcDto.mainClassDto = mainClassDto;

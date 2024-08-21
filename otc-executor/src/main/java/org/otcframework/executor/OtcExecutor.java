@@ -33,14 +33,11 @@ public interface OtcExecutor {
 	 * Execute otc.
 	 *
 	 * @param <T>          the generic type
-	 * @param <S>          the generic type
 	 * @param otcNamespace the otc namespace
-	 * @param source       the source
 	 * @param targetClz    the target clz
-	 * @param data         the data
 	 * @return the t
 	 */
-	<T, S> T execute(String otcNamespace, S source, Class<T> targetClz, Map<String, Object> data);
+	<T> T copyFromLiterals(String otcNamespace, Class<T> targetClz);
 
 	/**
 	 * Execute otc.
@@ -51,5 +48,32 @@ public interface OtcExecutor {
 	 * @param data         the data
 	 * @return the t
 	 */
-	<T> T execute(String otcNamespace, Class<T> targetClz, Map<String, Object> data);
+	<T> T copyFromLiterals(String otcNamespace, Class<T> targetClz, Map<String, Object> data);
+
+	/**
+	 * Execute otc.
+	 *
+	 * @param <T>          the generic type
+	 * @param <S>          the generic type
+	 * @param otcNamespace the otc namespace
+	 * @param source       the source
+	 * @param targetClz    the target clz
+	 * @return the t
+	 */
+	<T, S> T copyFromSource(String otcNamespace, S source, Class<T> targetClz);
+
+	/**
+	 * Execute otc.
+	 *
+	 * @param <T>          the generic type
+	 * @param <S>          the generic type
+	 * @param otcNamespace the otc namespace
+	 * @param source       the source
+	 * @param targetClz    the target clz
+	 * @param data         the data
+	 * @return the t
+	 */
+	<T, S> T copyFromSource(String otcNamespace, S source, Class<T> targetClz, Map<String, Object> data);
+
+
 }
